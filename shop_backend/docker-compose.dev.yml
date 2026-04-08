@@ -1,0 +1,91 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: lazuli
+      POSTGRES_USER: lazuli
+      POSTGRES_PASSWORD: lazuli
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lazuli -d lazuli"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: lazuli
+      POSTGRES_USER: lazuli
+      POSTGRES_PASSWORD: lazuli
+      DJANGO_SETTINGS_MODULE: brahim.settings.dev
+      DEBUG: "1"
+      ALLOWED_HOSTS: "localhost,127.0.0.1,0.0.0.0"
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: celery -A brahim worker -l info
+    volumes:
+      - .:/app
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      POSTGRES_HOST: db
+      POSTGRES_DB: lazuli
+      POSTGRES_USER: lazuli
+      POSTGRES_PASSWORD: lazuli
+      DJANGO_SETTINGS_MODULE: brahim.settings.dev
+    depends_on:
+      - redis
+      - db
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: celery -A brahim beat -l info
+    volumes:
+      - .:/app
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      POSTGRES_HOST: db
+      POSTGRES_DB: lazuli
+      POSTGRES_USER: lazuli
+      POSTGRES_PASSWORD: lazuli
+      DJANGO_SETTINGS_MODULE: brahim.settings.dev
+    depends_on:
+      - redis
+      - db
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
