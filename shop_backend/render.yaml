@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: lazuli-backend
+    env: python
+    rootDir: shop_backend
+    buildCommand: pip install -r requirements/base.txt
+    startCommand: gunicorn brahim.wsgi:application

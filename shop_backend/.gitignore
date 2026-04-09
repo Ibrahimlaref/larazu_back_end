@@ -26,3 +26,9 @@ pdfs/
 *docker-compose.postgres.yml
 
 .vscode/
+venv/
+.env
+db.sqlite3
+media/
+staticfiles/
+celerybeat-schedule
