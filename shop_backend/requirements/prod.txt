@@ -1,5 +1,17 @@
 # Production requirements for Render.com
--r base.txt
+asgiref==3.11.1
+celery==5.4.0
+Django==6.0.2
+django-cors-headers==4.9.0
+djangorestframework==3.16.1
+djangorestframework-simplejwt==5.3.1
+drf-spectacular==0.27.2
+gunicorn==25.3.0
+packaging==26.0
+pillow==10.2.0
+PyJWT==2.11.0
+sqlparse==0.5.5
+tzdata==2025.3
 
 # Production server
 gunicorn==21.2.0
