@@ -1,0 +1,9 @@
+# Production requirements for Render.com
+-r base.txt
+
+# Production server
+gunicorn==21.2.0
+
+# Additional production dependencies
+whitenoise==6.6.0  # For serving static files
+psycopg2-binary==2.9.9  # PostgreSQL adapter

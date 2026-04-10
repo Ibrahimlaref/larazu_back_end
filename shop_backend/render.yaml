@@ -3,9 +3,9 @@ services:
     name: lazuli-backend
     runtime: docker
     buildCommand: "echo 'Docker build handled by Render'"
-    dockerfilePath: ./shop_backend/Dockerfile.prod
+    dockerfilePath: ./Dockerfile.prod
     dockerContext: .
-    postBuildCommand: "chmod +x shop_backend/post-deploy.sh && ./shop_backend/post-deploy.sh"
+    postBuildCommand: "chmod +x post-deploy.sh && ./post-deploy.sh"
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: brahim.settings.prod
@@ -29,19 +29,3 @@ services:
     redis:
       - name: lazuli-redis
         url: redis://redis:6379
-
-  - type: redis
-    name: lazuli-redis
-    ipAllowList: []  # Only accessible by other services in this project
-
-  - type: web
-    name: lazuli-frontend
-    runtime: static
-    buildCommand: "cd shop_frontend && npm install && npm run build"
-    staticPublishPath: ./shop_frontend/dist
-    envVars:
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: lazuli-backend
-          property: host

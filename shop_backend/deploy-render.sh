@@ -1,5 +1,6 @@
 #!/bin/bash
 # Render.com Deployment Script for LAZULI Backend
+# Run this from the shop_backend directory
 
 echo "🚀 Deploying LAZULI Backend to Render.com"
 echo "=========================================="
@@ -18,17 +19,16 @@ fi
 
 echo "✅ Render CLI ready"
 
-# Deploy using render.yaml
-echo "📦 Deploying services..."
+# Deploy using render.yaml from shop_backend directory
+echo "📦 Deploying backend service..."
 render deploy render.yaml
 
 echo "🎉 Deployment initiated!"
 echo ""
 echo "Next steps:"
 echo "1. Go to https://dashboard.render.com"
-echo "2. Check your services: lazuli-backend, lazuli-frontend, lazuli-redis"
+echo "2. Check your service: lazuli-backend"
 echo "3. Update CORS_ALLOWED_ORIGINS in backend environment variables"
-echo "4. Run migrations: python manage.py migrate"
-echo "5. Seed data: python manage.py seed_lazuli"
+echo "4. The post-deploy script will run automatically"
 echo ""
 echo "Admin login: admin@lazuli.dz / admin123"
