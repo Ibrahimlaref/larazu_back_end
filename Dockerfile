@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements/prod.txt /app/requirements/prod.txt
+COPY requirements/ /app/requirements/
 RUN pip install --no-cache-dir -r requirements/prod.txt
 
 COPY . /app
