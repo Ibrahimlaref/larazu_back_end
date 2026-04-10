@@ -41,6 +41,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/admin/login/')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     command: >
       sh -c "python manage.py migrate --noinput &&
              python manage.py seed_lazuli &&
@@ -59,7 +64,8 @@ services:
       - ./shop_frontend:/app
       - /app/node_modules
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     command: npm run dev -- --host
 
   redis:
